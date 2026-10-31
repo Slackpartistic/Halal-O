@@ -115,3 +115,25 @@ describe('withCache', () => {
     expect(r).toMatchObject({ fromCache: true, product: { name: 'Caramel chocolate bar' } });
   });
 });
+
+describe('recorded response', () => {
+  // Recorded from the live API on 31 Oct 2026 (fields=ingredients,labels_tags only).
+  // Open Food Facts only sets vegan/vegetarian on ingredients it recognises (is_in_taxonomy: 1).
+  const recorded = JSON.parse(readFileSync(resolve(__dirname, 'fixtures/3017624010701.json'), 'utf-8'));
+
+  it('keeps vegan flags only where Open Food Facts set them', async () => {
+    const p = await createOffClient({ userAgent: UA, fetch: fakeFetch(200, recorded) }).getProduct('3017624010701');
+    const flags = Object.fromEntries((p?.input.offIngredients ?? []).map((i) => [i.text, i.vegan]));
+    expect(flags).toMatchObject({ vanillin: 'yes', sugar: undefined, emulsifier: undefined });
+  });
+
+  it('flags the unnamed emulsifier when the ingredient text is the parsed list', async () => {
+    const reference = JSON.parse(readFileSync(resolve(__dirname, '../../../data/ingredients.json'), 'utf-8')) as Reference;
+    const p = await createOffClient({ userAgent: UA, fetch: fakeFetch(200, recorded) }).getProduct('3017624010701');
+    const text = p!.input.offIngredients!.map((i) => i.text).join(', ');
+    const result = createEvaluator(reference).evaluate({ ...p!.input, ingredientsText: text });
+    expect(result.verdict).toBe('mushbooh');
+    expect(result.reasons.map((r) => r.entryId)).toEqual(['emulsifier_unspecified']);
+    expect(result.assumedHalal).toContain('vanillin');
+  });
+});
