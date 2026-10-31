@@ -1,0 +1,35 @@
+name: Monthly ingredient reference refresh
+
+# Rebuilds data/ingredients.json from the latest Open Food Facts additives taxonomy and
+# opens a PR when anything changed. Hand-reviewed rulings in data/tools/build.py are never
+# touched; nothing ships until the PR is reviewed and merged.
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: data/tools/update.sh
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: data/monthly-reference-refresh
+          commit-message: "Refresh ingredient reference from Open Food Facts"
+          title: "Monthly ingredient reference refresh"
+          body: |
+            Automated rebuild of `data/ingredients.json` and `data/ingredients.csv` from the latest
+            Open Food Facts additives taxonomy. Review the diff for new E-numbers, changed
+            vegan/vegetarian flags and new aliases before merging.
+          add-paths: |
+            data/ingredients.json
+            data/ingredients.csv
