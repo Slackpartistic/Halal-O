@@ -1,0 +1,118 @@
+{
+  "_note": "Hand-written from typical UK labels, not recorded Open Food Facts responses. PR 4 (Open Food Facts client) will add recorded responses for real barcodes.",
+  "products": [
+    {
+      "name": "Gummy sweets with gelatine",
+      "input": { "ingredientsText": "Glucose syrup, sugar, gelatine, dextrose, citric acid, fruit and plant concentrates (apple, kiwi), flavouring, glazing agents (carnauba wax, beeswax)." },
+      "expect": { "verdict": "haram", "reasonIds": ["e428", "flavourings"] }
+    },
+    {
+      "name": "Halal-certified gummy sweets",
+      "input": { "ingredientsText": "Glucose syrup, sugar, halal beef gelatine, citric acid, flavouring", "labels": ["en:halal"] },
+      "expect": { "verdict": "halal", "certified": true }
+    },
+    {
+      "name": "Sweets with halal beef gelatine but no halal label",
+      "input": { "ingredientsText": "Glucose syrup, sugar, halal beef gelatine, citric acid, colour (paprika extract)" },
+      "expect": { "verdict": "halal", "reasonIds": [] }
+    },
+    {
+      "name": "Milk chocolate caramel bar",
+      "input": { "ingredientsText": "Sugar, glucose syrup, skimmed milk powder, cocoa butter, cocoa mass, sunflower oil, milk fat, lactose, whey permeate (from milk), palm fat, barley malt extract, salt, emulsifier (soya lecithin), egg white powder, natural vanilla extract." },
+      "expect": { "verdict": "haram", "reasonIds": ["whey", "alcohol_based_extracts"] }
+    },
+    {
+      "name": "Halal-certified chicken sausages",
+      "input": { "ingredientsText": "Chicken (70%), water, rusk (wheat flour, salt), potato starch, salt, spices, stabiliser: diphosphates, preservative: sodium metabisulphite", "labels": ["en:halal"] },
+      "expect": { "verdict": "halal", "certified": true }
+    },
+    {
+      "name": "Chicken sausages without halal label",
+      "input": { "ingredientsText": "Chicken (70%), water, rusk (wheat flour, salt), potato starch, salt, spices" },
+      "expect": { "verdict": "haram", "reasonIds": ["meat_non_halal"] }
+    },
+    {
+      "name": "Vegan biscuit with E471",
+      "input": { "ingredientsText": "Wheat flour, sugar, palm oil, emulsifier (E471), raising agent (sodium bicarbonate), salt", "labels": ["en:vegan"] },
+      "expect": { "verdict": "halal", "upgraded": ["e471"] }
+    },
+    {
+      "name": "Biscuit with E471 and no labels",
+      "input": { "ingredientsText": "Wheat flour, sugar, palm oil, emulsifier (E471), raising agent (sodium bicarbonate), salt" },
+      "expect": { "verdict": "mushbooh", "reasonIds": ["e471"] }
+    },
+    {
+      "name": "Bread with vegetable E471",
+      "input": { "ingredientsText": "Wheat flour, water, yeast, salt, emulsifier: E471 (vegetable), flour treatment agent (ascorbic acid)" },
+      "expect": { "verdict": "halal", "reasonIds": [] }
+    },
+    {
+      "name": "Vegetarian label does not upgrade E471",
+      "input": { "ingredientsText": "Wheat flour, sugar, palm oil, emulsifier (E471)", "labels": ["en:vegetarian"] },
+      "expect": { "verdict": "mushbooh", "reasonIds": ["e471"] }
+    },
+    {
+      "name": "Vegan label does not upgrade alcohol",
+      "input": { "ingredientsText": "Sugar, cocoa butter, rice syrup, natural vanilla extract", "labels": ["en:vegan"] },
+      "expect": { "verdict": "haram", "reasonIds": ["alcohol_based_extracts"] }
+    },
+    {
+      "name": "Plain ready salted crisps",
+      "input": { "ingredientsText": "Potatoes, sunflower oil (24%), salt" },
+      "expect": { "verdict": "halal", "reasonIds": [] }
+    },
+    {
+      "name": "Prawn cocktail crisps",
+      "input": { "ingredientsText": "Potatoes, sunflower oil, prawn cocktail seasoning (sugar, salt, flavourings, yeast extract, acidity regulator: citric acid, paprika extract)" },
+      "expect": { "verdict": "mushbooh", "reasonIds": ["flavourings"] }
+    },
+    {
+      "name": "Red sweets coloured with carmine",
+      "input": { "ingredientsText": "Sugar, glucose syrup, modified starch, acid: citric acid, colour: carmine" },
+      "expect": { "verdict": "haram", "reasonIds": ["e120"] }
+    },
+    {
+      "name": "Pesto with Grana Padano",
+      "input": { "ingredientsText": "Basil (40%), sunflower oil, Grana Padano cheese (milk, salt, rennet (animal), preservative: lysozyme (egg)), cashew nuts, garlic" },
+      "expect": { "verdict": "haram", "reasonIds": ["cheese", "rennet_unspecified"] }
+    },
+    {
+      "name": "Cheddar with vegetarian rennet",
+      "input": { "ingredientsText": "Pasteurised cows' milk, salt, starter cultures, vegetarian rennet" },
+      "expect": { "verdict": "halal", "reasonIds": [] }
+    },
+    {
+      "name": "Prawn sandwich filling",
+      "input": { "ingredientsText": "Prawns (60%), mayonnaise (rapeseed oil, water, spirit vinegar, pasteurised egg yolk, salt, sugar), lemon juice" },
+      "expect": { "verdict": "halal", "reasonIds": [] }
+    },
+    {
+      "name": "Pasta sauce with wine",
+      "input": { "ingredientsText": "Tomatoes, onion, red wine (3%), olive oil, garlic, basil" },
+      "expect": { "verdict": "haram", "reasonIds": ["alcoholic_drinks_khamr"] }
+    },
+    {
+      "name": "Salad dressing with balsamic vinegar",
+      "input": { "ingredientsText": "Rapeseed oil, water, balsamic vinegar (wine vinegar, grape must), sugar, salt, mustard" },
+      "expect": { "verdict": "mushbooh", "reasonIds": ["vinegar_from_alcohol"] }
+    },
+    {
+      "name": "Product with an unrecognised animal ingredient",
+      "input": {
+        "ingredientsText": "Wheat flour, mystery fat",
+        "offIngredients": [{ "text": "mystery fat", "vegan": "no", "vegetarian": "no" }]
+      },
+      "expect": { "verdict": "mushbooh", "reasonIds": [null] }
+    },
+    {
+      "name": "Additive found only in Open Food Facts' additive list",
+      "input": { "ingredientsText": "Farine de blé, sucre", "additivesTags": ["en:e120"] },
+      "expect": { "verdict": "haram", "reasonIds": ["e120"] }
+    },
+    {
+      "name": "No ingredient data",
+      "input": { "ingredientsText": "" },
+      "expect": { "verdict": "unknown" }
+    }
+  ]
+}

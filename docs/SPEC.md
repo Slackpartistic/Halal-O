@@ -64,7 +64,7 @@ The verdict engine is a pure TypeScript package with no app code in it. That way
    3. With a vegan label, every Mushbooh ingredient whose `vegan_label_upgrades` is true becomes Halal. The vegetarian label upgrades nothing.
    4. Any Mushbooh ingredient still left makes it **Mushbooh**.
    5. Otherwise it's **Halal**.
-7. **Confidence:** high, medium or low. It's the lowest confidence of any ingredient that decided the verdict, and it drops to low when more than 30% of the ingredients were "not checked". Low confidence shows as "Likely halal: check the label".
+7. **Confidence:** high, medium or low. It's the lowest confidence of any finding that decided the verdict. An origin named on the label (e.g. "E471 (vegetable)") counts as high. On a Halal result, more than 50% "not checked" ingredients caps confidence at medium, since plain foods like "potatoes" are unchecked by design. Low confidence shows as "Likely halal: check the label".
 
 ### 3.3 Output
 ```ts
