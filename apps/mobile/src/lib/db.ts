@@ -1,7 +1,7 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 import type { Product, ProductStore } from '@halal-o/off-client';
 
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 /** Runs once per app start from <SQLiteProvider onInit>. Each step upgrades one version. */
 export async function migrate(db: SQLiteDatabase): Promise<void> {
@@ -38,6 +38,10 @@ export async function migrate(db: SQLiteDatabase): Promise<void> {
     `);
     current = 2;
   }
+  if (current < 3) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);`);
+    current = 3;
+  }
   await db.execAsync(`PRAGMA user_version = ${SCHEMA_VERSION}`);
 }
 
@@ -61,4 +65,13 @@ export function sqliteProductStore(db: SQLiteDatabase): ProductStore {
       );
     },
   };
+}
+
+export async function getSetting(db: SQLiteDatabase, key: string): Promise<string | null> {
+  const row = await db.getFirstAsync<{ value: string }>('SELECT value FROM settings WHERE key = ?', key);
+  return row?.value ?? null;
+}
+
+export async function setSetting(db: SQLiteDatabase, key: string, value: string): Promise<void> {
+  await db.runAsync('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', key, value);
 }

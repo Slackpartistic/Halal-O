@@ -37,9 +37,14 @@ export default function ScanScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Halal-O</Text>
-        <Text style={styles.headerLink} accessibilityRole="link" onPress={() => router.push('/history')}>
-          History
-        </Text>
+        <View style={styles.headerLinks}>
+          <Text style={styles.headerLink} accessibilityRole="link" onPress={() => router.push('/history')}>
+            History
+          </Text>
+          <Text style={styles.headerLink} accessibilityRole="link" onPress={() => router.push('/about')}>
+            About
+          </Text>
+        </View>
       </View>
       <Text style={styles.subtitle}>Point the camera at a product barcode</Text>
 
@@ -97,6 +102,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 },
   title: { fontSize: 28, fontWeight: '700' },
+  headerLinks: { flexDirection: 'row', gap: 12 },
   headerLink: { color: '#1a5fb4', fontSize: 16, fontWeight: '600', padding: 4 },
   subtitle: { fontSize: 15, color: '#555', marginTop: 4, marginBottom: 16 },
   cameraBox: { flex: 1, borderRadius: 16, overflow: 'hidden', backgroundColor: '#111' },
