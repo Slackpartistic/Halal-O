@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { Reason, Result, Verdict } from '@halal-o/engine';
+import { DISCLAIMER } from '@/lib/copy';
 import { getReference } from '@/lib/engine';
 
 export const VERDICT_STYLE: Record<Verdict, { label: string; color: string }> = {
@@ -10,9 +11,6 @@ export const VERDICT_STYLE: Record<Verdict, { label: string; color: string }> = 
   unknown: { label: 'Not enough information', color: '#5f6368' },
 };
 
-const DISCLAIMER =
-  'This app checks ingredients against a reference list following Hanafi rulings. It is not a fatwa or certification. ' +
-  'When a product is Mushbooh or you are unsure, check with the manufacturer, a recognised halal certifier, or a scholar.';
 
 function subtitle(result: Result): string | null {
   if (result.correction) return `Checked by the Halal-O team on ${result.correction.reviewed}.`;
