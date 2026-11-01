@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { ResultView } from '@/components/ResultView';
-import { getEvaluator } from '@/lib/engine';
+import { router, useLocalSearchParams } from 'expo-router';
+import { ResultView, VERDICT_STYLE } from '@/components/ResultView';
+import { evaluateProduct } from '@/lib/engine';
 
 /** Type or paste an ingredient list and check it with the same engine as a scan. */
 export default function ManualScreen() {
@@ -14,8 +14,8 @@ export default function ManualScreen() {
   const result = useMemo(() => {
     if (!text.trim()) return null;
     const labels = [...(halalLabel ? ['en:halal'] : []), ...(veganLabel ? ['en:vegan'] : [])];
-    return getEvaluator().evaluate({ ingredientsText: text, labels });
-  }, [text, halalLabel, veganLabel]);
+    return evaluateProduct(barcode ?? null, { ingredientsText: text, labels });
+  }, [barcode, text, halalLabel, veganLabel]);
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -42,6 +42,20 @@ export default function ManualScreen() {
         </View>
 
         {result ? <ResultView result={result} /> : null}
+        {result ? (
+          <Text
+            style={styles.link}
+            accessibilityRole="link"
+            onPress={() =>
+              router.push({
+                pathname: '/report',
+                params: { barcode, verdict: VERDICT_STYLE[result.verdict].label, ingredients: text, problem: barcode ? 'Product is missing' : 'Verdict looks wrong' },
+              })
+            }
+          >
+            {barcode ? 'Send us this product' : 'Report a problem'}
+          </Text>
+        ) : null}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -55,4 +69,5 @@ const styles = StyleSheet.create({
   input: { minHeight: 120, borderWidth: 1, borderColor: '#ccc', borderRadius: 10, padding: 12, fontSize: 16 },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   rowText: { fontSize: 16 },
+  link: { color: '#1a5fb4', fontSize: 15, textAlign: 'center', paddingVertical: 8 },
 });

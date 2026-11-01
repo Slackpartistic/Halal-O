@@ -44,7 +44,10 @@ export interface Result {
   assumedHalal: string[];
   notChecked: string[];
   signalsUsed: ('halal_label' | 'vegan_label')[];
+  /** Version of the data behind the verdict; changes when the reference or corrections list does. */
   referenceVersion: string;
+  /** Set when a reviewed correction for this barcode replaced the engine's verdict. */
+  correction?: { note: string; reviewed: string; issue?: string };
 }
 
 const STRICTNESS: Record<RulingVerdict, number> = { halal: 0, mushbooh: 1, haram: 2 };

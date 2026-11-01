@@ -22,3 +22,5 @@ jobs:
           python-version: "3.12"
       - name: Validate ingredient reference
         run: python3 -I data/tools/validate.py data/ingredients.json
+      - name: Validate corrections list
+        run: python3 -I data/tools/validate_corrections.py data/corrections.json
