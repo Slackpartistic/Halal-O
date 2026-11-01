@@ -81,6 +81,9 @@ export default function ScanScreen() {
           <Text style={styles.buttonText}>Check</Text>
         </Pressable>
       </View>
+      <Text style={styles.link} accessibilityRole="link" onPress={() => router.push('/manual')}>
+        No barcode? Type the ingredients instead
+      </Text>
     </SafeAreaView>
   );
 }
@@ -97,4 +100,5 @@ const styles = StyleSheet.create({
   button: { backgroundColor: '#1b7f4b', borderRadius: 10, paddingHorizontal: 18, justifyContent: 'center', height: 48 },
   buttonDisabled: { opacity: 0.4 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  link: { color: '#1a5fb4', fontSize: 15, textAlign: 'center', paddingBottom: 16 },
 });

@@ -9,6 +9,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="index" options={{ title: 'Halal-O', headerShown: false }} />
         <Stack.Screen name="product/[barcode]" options={{ title: 'Result' }} />
+        <Stack.Screen name="manual" options={{ title: 'Check ingredients' }} />
       </Stack>
       <StatusBar style="auto" />
     </SQLiteProvider>
