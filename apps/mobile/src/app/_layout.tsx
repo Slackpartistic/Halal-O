@@ -11,6 +11,7 @@ export default function RootLayout() {
         <Stack.Screen name="product/[barcode]" options={{ title: 'Result' }} />
         <Stack.Screen name="manual" options={{ title: 'Check ingredients' }} />
         <Stack.Screen name="history" options={{ title: 'History' }} />
+        <Stack.Screen name="report" options={{ title: 'Report a problem' }} />
       </Stack>
       <StatusBar style="auto" />
     </SQLiteProvider>

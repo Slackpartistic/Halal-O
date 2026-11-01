@@ -1,7 +1,7 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 import type { Result, Verdict } from '@halal-o/engine';
 import type { Product } from '@halal-o/off-client';
-import { getEvaluator } from './engine';
+import { evaluateProduct } from './engine';
 
 export const HISTORY_LIMIT = 100;
 
@@ -78,20 +78,19 @@ export async function listScans(db: SQLiteDatabase, search = ''): Promise<Scan[]
 }
 
 /**
- * Re-check saved scans whose verdict came from an older ingredient reference, using
+ * Re-check saved scans whose verdict came from an older reference or corrections list, using
  * the cached product. When the verdict changes, keep the old one so the list can
  * show a "verdict changed" badge (our version of Mustakshif's status-change alerts).
  * Returns how many verdicts changed.
  */
 export async function recheckScans(db: SQLiteDatabase): Promise<number> {
-  const evaluator = getEvaluator();
   const rows = await db.getAllAsync<ScanRow & { json: string | null }>(
     `SELECT s.*, p.json FROM scans s JOIN products p ON p.barcode = s.barcode`,
   );
   let changed = 0;
   for (const row of rows) {
     if (!row.json) continue;
-    const result = evaluator.evaluate((JSON.parse(row.json) as Product).input);
+    const result = evaluateProduct(row.barcode, (JSON.parse(row.json) as Product).input);
     if (result.referenceVersion === row.reference_version && result.verdict === row.verdict) continue;
     const differs = result.verdict !== row.verdict;
     if (differs) changed++;

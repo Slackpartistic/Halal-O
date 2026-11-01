@@ -1,7 +1,8 @@
-import { createEvaluator, type Evaluator, type Reference } from '@halal-o/engine';
+import { applyCorrection, createEvaluator, type CorrectionsFile, type Evaluator, type ProductInput, type Reference, type Result } from '@halal-o/engine';
 
 let reference: Reference | null = null;
 let evaluator: Evaluator | null = null;
+let corrections: CorrectionsFile | null = null;
 
 /**
  * The full reference (about 2 MB) is bundled for now; trimming it to the languages
@@ -16,4 +17,15 @@ export function getReference(): Reference {
 export function getEvaluator(): Evaluator {
   if (!evaluator) evaluator = createEvaluator(getReference());
   return evaluator;
+}
+
+/** Reviewed per-barcode verdicts. Bundled for now; downloaded with the reference later. */
+export function getCorrections(): CorrectionsFile {
+  if (!corrections) corrections = require('../../../../data/corrections.json') as CorrectionsFile;
+  return corrections;
+}
+
+/** The engine's verdict, replaced by a reviewed correction when there is one for this barcode. */
+export function evaluateProduct(barcode: string | null, input: ProductInput): Result {
+  return applyCorrection(getEvaluator().evaluate(input), barcode, getCorrections());
 }

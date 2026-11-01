@@ -4,7 +4,7 @@ import type { Result } from '@halal-o/engine';
 import { createOffClient, OffError, withCache, type Product } from '@halal-o/off-client';
 import { OFF_USER_AGENT } from './config';
 import { sqliteProductStore } from './db';
-import { getEvaluator } from './engine';
+import { evaluateProduct } from './engine';
 import { recordScan } from './history';
 
 export type LookupState =
@@ -15,7 +15,7 @@ export type LookupState =
 
 const client = createOffClient({ userAgent: OFF_USER_AGENT });
 
-/** Look a barcode up (cache first, then Open Food Facts) and evaluate it. */
+/** Look a barcode up (cache first, then Open Food Facts) and evaluate it, applying any reviewed correction. */
 export function useProductLookup(barcode: string): LookupState {
   const db = useSQLiteContext();
   const [state, setState] = useState<LookupState>({ status: 'loading' });
@@ -28,7 +28,7 @@ export function useProductLookup(barcode: string): LookupState {
       .then(({ product, fromCache }) => {
         if (cancelled) return;
         if (!product) return setState({ status: 'not_found' });
-        const result = getEvaluator().evaluate(product.input);
+        const result = evaluateProduct(product.barcode, product.input);
         setState({ status: 'done', product, result, fromCache });
         // History is a convenience; a failed write shouldn't hide the result.
         recordScan(db, product, result).catch(() => {});

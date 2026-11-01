@@ -1,0 +1,55 @@
+name: Report a product
+description: A verdict looks wrong, the pack has a halal logo, the ingredients are out of date, or the product is missing.
+title: "[Report] "
+labels: ["report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping keep Halal-O accurate. Every report is reviewed by hand before anything changes.
+        Photos of the ingredient list and of any halal logo help the most.
+  - type: input
+    id: barcode
+    attributes:
+      label: Barcode
+      description: The number under the barcode.
+      placeholder: "5000159407236"
+    validations:
+      required: true
+  - type: input
+    id: product
+    attributes:
+      label: Product name and brand
+  - type: dropdown
+    id: problem
+    attributes:
+      label: What's the problem?
+      options:
+        - Verdict looks wrong
+        - Halal logo on pack
+        - Ingredients are out of date
+        - Product is missing
+    validations:
+      required: true
+  - type: input
+    id: app_verdict
+    attributes:
+      label: What the app said
+      placeholder: "Mushbooh"
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: What should it say, and why? Name the certifier if there is a halal logo.
+    validations:
+      required: true
+  - type: textarea
+    id: photos
+    attributes:
+      label: Photos
+      description: Drag photos of the ingredients and any halal logo here.
+  - type: input
+    id: app_info
+    attributes:
+      label: App and data version
+      description: Filled in by the app.

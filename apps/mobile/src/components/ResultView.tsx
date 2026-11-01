@@ -15,6 +15,7 @@ const DISCLAIMER =
   'When a product is Mushbooh or you are unsure, check with the manufacturer, a recognised halal certifier, or a scholar.';
 
 function subtitle(result: Result): string | null {
+  if (result.correction) return `Checked by the Halal-O team on ${result.correction.reviewed}.`;
   if (result.certified) return 'Halal label reported on pack. Check the logo is from a certifier you trust.';
   if (result.verdict === 'unknown') return "We couldn't find an ingredient list for this product.";
   if (result.verdict === 'halal' && result.confidence !== 'high') return 'Likely halal: check the label.';
@@ -80,6 +81,18 @@ export function ResultView({ result }: { result: Result }) {
   return (
     <View style={styles.container}>
       <VerdictBadge result={result} />
+      {result.correction ? (
+        <View style={[styles.card, styles.correction]}>
+          <Text style={styles.cardTitle}>Reviewed after a report</Text>
+          <Text style={styles.body}>{result.correction.note}</Text>
+          {result.correction.issue ? (
+            <Text style={styles.link} accessibilityRole="link" onPress={() => Linking.openURL(result.correction!.issue!)}>
+              See the report
+            </Text>
+          ) : null}
+          <Text style={styles.note}>The ingredient check below is shown for reference; this review replaces its verdict.</Text>
+        </View>
+      ) : null}
 
       {flagged.length > 0 ? (
         <>
@@ -108,6 +121,7 @@ const styles = StyleSheet.create({
   badgeSub: { color: '#fff', fontSize: 14, marginTop: 6, textAlign: 'center' },
   section: { fontSize: 18, fontWeight: '700', marginTop: 4 },
   card: { borderWidth: 1, borderColor: '#e6e6e6', borderRadius: 12, padding: 12, gap: 6 },
+  correction: { borderColor: '#1a5fb4', backgroundColor: '#eef4fb' },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 },
   cardTitle: { fontSize: 16, fontWeight: '600', flexShrink: 1 },
   pill: { color: '#fff', fontSize: 12, fontWeight: '700', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, overflow: 'hidden' },
