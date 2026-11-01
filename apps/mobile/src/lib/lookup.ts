@@ -5,6 +5,7 @@ import { createOffClient, OffError, withCache, type Product } from '@halal-o/off
 import { OFF_USER_AGENT } from './config';
 import { sqliteProductStore } from './db';
 import { getEvaluator } from './engine';
+import { recordScan } from './history';
 
 export type LookupState =
   | { status: 'loading' }
@@ -27,7 +28,10 @@ export function useProductLookup(barcode: string): LookupState {
       .then(({ product, fromCache }) => {
         if (cancelled) return;
         if (!product) return setState({ status: 'not_found' });
-        setState({ status: 'done', product, result: getEvaluator().evaluate(product.input), fromCache });
+        const result = getEvaluator().evaluate(product.input);
+        setState({ status: 'done', product, result, fromCache });
+        // History is a convenience; a failed write shouldn't hide the result.
+        recordScan(db, product, result).catch(() => {});
       })
       .catch((e: unknown) => {
         if (cancelled) return;
